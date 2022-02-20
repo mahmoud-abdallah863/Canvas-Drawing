@@ -1,10 +1,7 @@
 package com.mahmoud.canvasdrawing.ui
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -20,6 +17,10 @@ class CanvasView (
 ): View(context) {
 
     private val TAG = "CanvasViewTag"
+
+
+    private lateinit var frame: RectF
+    private val roundFrameRadius: Float = 10f
 
     private lateinit var extraCanvas: Canvas
     private lateinit var extraBitmap: Bitmap
@@ -73,7 +74,7 @@ class CanvasView (
         val dx = Math.abs(motionTouchEventX - currentX)
         val dy = Math.abs(motionTouchEventY - currentY)
 
-        if (dx >= touchTolerance || dy <= touchTolerance) {
+        if (dx >= touchTolerance || dy >= touchTolerance) {
             path.quadTo(currentX, currentY, (motionTouchEventX + currentX)/2, (motionTouchEventY + currentY) / 2)
             currentX = motionTouchEventX
             currentY = motionTouchEventY
@@ -98,11 +99,15 @@ class CanvasView (
 
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(backgroundColor)
+
+        val inset = 40f
+        frame = RectF(inset, inset, w - inset, h - inset)
     }
 
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawBitmap(extraBitmap, 0f, 0f, null)
+        canvas?.drawRoundRect(frame, roundFrameRadius, roundFrameRadius, paint)
     }
 }
