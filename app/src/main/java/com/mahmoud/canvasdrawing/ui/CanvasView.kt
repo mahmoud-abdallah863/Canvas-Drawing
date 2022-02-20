@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import androidx.core.content.res.ResourcesCompat
 import com.mahmoud.canvasdrawing.R
 
@@ -28,8 +29,13 @@ class CanvasView (
     private val drawingColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
 
 
+    private var currentX = 0f
+    private var currentY = 0f
+
     private var motionTouchEventX = 0f
     private var motionTouchEventY = 0f
+
+    private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
 
     private val path = Path()
     private val paint = Paint().apply {
@@ -56,11 +62,29 @@ class CanvasView (
         return true
     }
 
-    private fun touchStart() {}
+    private fun touchStart() {
+        path.reset()
+        path.moveTo(motionTouchEventX, motionTouchEventY)
+        currentX = motionTouchEventX
+        currentY = motionTouchEventY
+    }
 
-    private fun touchMove() {}
+    private fun touchMove() {
+        val dx = Math.abs(motionTouchEventX - currentX)
+        val dy = Math.abs(motionTouchEventY - currentY)
 
-    private fun touchUp() {}
+        if (dx >= touchTolerance || dy <= touchTolerance) {
+            path.quadTo(currentX, currentY, (motionTouchEventX + currentX)/2, (motionTouchEventY + currentY) / 2)
+            currentX = motionTouchEventX
+            currentY = motionTouchEventY
+            extraCanvas.drawPath(path, paint)
+            invalidate()
+        }
+    }
+
+    private fun touchUp() {
+        path.reset()
+    }
 
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
