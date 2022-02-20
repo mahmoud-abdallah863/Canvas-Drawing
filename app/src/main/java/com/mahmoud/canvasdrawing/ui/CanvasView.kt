@@ -100,7 +100,7 @@ class CanvasView (
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(backgroundColor)
 
-        val inset = 40f
+        val inset = STROKE_WIDTH / 2f
         frame = RectF(inset, inset, w - inset, h - inset)
     }
 
