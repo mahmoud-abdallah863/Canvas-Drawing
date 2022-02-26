@@ -2,6 +2,7 @@ package com.mahmoud.canvasdrawing.ui
 
 import android.content.Context
 import android.graphics.*
+import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -13,8 +14,9 @@ import com.mahmoud.canvasdrawing.R
 private const val STROKE_WIDTH = 12f
 
 class CanvasView (
-    context: Context
-): View(context) {
+    context: Context,
+    attrs: AttributeSet
+): View(context, attrs) {
 
     private val TAG = "CanvasViewTag"
 
@@ -108,6 +110,14 @@ class CanvasView (
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawBitmap(extraBitmap, 0f, 0f, null)
-        canvas?.drawRoundRect(frame, roundFrameRadius, roundFrameRadius, paint)
+//        canvas?.drawRoundRect(frame, roundFrameRadius, roundFrameRadius, paint)
+    }
+
+    fun changeColor(color: Int) {
+        paint.color = color
+    }
+
+    fun clear() {
+        paint.color = backgroundColor
     }
 }
